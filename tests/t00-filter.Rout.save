@@ -1,0 +1,73 @@
+
+R version 3.4.0 (2017-04-21) -- "You Stupid Darkness"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(Modeler)
+Loading required package: ClassDiscovery
+Loading required package: cluster
+Loading required package: oompaBase
+Loading required package: ClassComparison
+> set.seed(246391)
+> data <- matrix(rnorm(1000*30), nrow=1000, ncol=30)
+> 
+> fm <- filterMean(0.2)
+> summary(fm(data))
+   Mode   FALSE    TRUE 
+logical     846     154 
+> summary(fm(as.data.frame(data)))
+   Mode   FALSE    TRUE 
+logical     846     154 
+> 
+> fd <- filterMedian(0.2)
+> summary(fd(data))
+   Mode   FALSE    TRUE 
+logical     794     206 
+> 
+> fs <- filterSD(1)
+> summary(fs(data))
+   Mode   FALSE    TRUE 
+logical     551     449 
+> 
+> fr <- filterRange(3)
+> fx <- filterMax(2)
+> fn <- filterMin(-1)
+> lap <- lapply(list(fm, fd, fs, fr, fx, fn), function(f) summary(f(data)))
+> 
+> try(fm(1:3)) # unclear whether this should work
+[1] TRUE TRUE TRUE
+> try(fs(1:3)) # unclear whether this should work
+[1] NA NA NA
+> try(fd(1:3)) # fails
+Error in apply(data, 1, median, na.rm = TRUE) : 
+  dim(X) must have a positive length
+> try(fr(1:3)) # fails
+Error in apply(data, 1, function(x) diff(range(x))) : 
+  dim(X) must have a positive length
+> try(fx(1:3)) # fails
+Error in apply(data, 1, max, na.rm = TRUE) : 
+  dim(X) must have a positive length
+> try(fn(1:3)) # fails
+Error in apply(data, 1, min, na.rm = TRUE) : 
+  dim(X) must have a positive length
+> 
+> try(fx("A")) # fails
+Error in apply(data, 1, max, na.rm = TRUE) : 
+  dim(X) must have a positive length
+> 
+> 
+> proc.time()
+   user  system elapsed 
+   1.66    0.24    1.90 

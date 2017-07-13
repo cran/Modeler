@@ -1,0 +1,100 @@
+
+R version 3.4.0 (2017-04-21) -- "You Stupid Darkness"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(Modeler)
+Loading required package: ClassDiscovery
+Loading required package: cluster
+Loading required package: oompaBase
+Loading required package: ClassComparison
+> set.seed(246391)
+> data <- matrix(rnorm(1000*36), nrow=1000, ncol=36)
+> data[1:50, 1:18] <- data[1:50, 1:18] + 1
+> status <- factor(rep(c("A", "B"), each=18))
+> 
+> fsel <- fsTtest(fdr=0.10, ming=125)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     875     125 
+> 
+> fsel <- fsModifiedFisher(q = 0.75)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     750     250 
+> 
+> fsel <- fsPearson(q = 0.9)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     900     100 
+> fsel <- fsPearson(rho=0.3)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     891     109 
+> 
+> fsel <- fsSpearman(q=0.9)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     900     100 
+> fsel <- fsSpearman(rho=0.3)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     893     107 
+> 
+> fsel <- fsMedSplitOddsRatio(OR = 5)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     964      36 
+> fsel <- fsMedSplitOddsRatio(q = 0.9) # note effect opf ties
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     964      36 
+> 
+> fsel <- fsChisquared(cutoff=0.5)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     824     176 
+> fsel <- fsChisquared(q = 0.9)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     900     100 
+> 
+> fsel <- fsEntropy()
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     900     100 
+> fsel <- fsEntropy(kind="gain.ratio")
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     900     100 
+> fsel <- fsEntropy(kind="symm")
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     900     100 
+> 
+> fsel <- fsFisherRandomForest(q = 0.9)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     900     100 
+> 
+> fsel <- fsTailRank(spec=0.9, conf=0.5)
+> summary(fsel(data, status))
+   Mode   FALSE    TRUE 
+logical     997       3 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  10.09    0.23   10.35 

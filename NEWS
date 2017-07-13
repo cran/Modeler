@@ -1,0 +1,52 @@
+			Dear Emacs, please make this -*-Text-*- mode!
+	**************************************************
+	*						 *
+	*	       2.3 SERIES NEWS			 *
+	*						 *
+	**************************************************
+
+
+		CHANGES IN R VERSION 2.3.0
+
+ADMINISTRATIVE
+
+    o	Changed LICENSE to Apache 2.0
+
+		CHANGES IN R VERSION 2.2.1
+
+BUG FIXES
+
+    o	Made compatible with new R check steps that verify DESCRIPTION
+        and NAMESPACE dependencies.
+
+		CHANGES IN R VERSION 2.2.0
+
+NEW FEATURES
+
+    o	Added objects and functions for the following methods: support
+        vector machines (SVM), neual networks (NNET), and random
+        forests (RF).
+
+
+		CHANGES IN R VERSION 2.1.0
+
+DEPRECATED
+
+    o	Instead of exporting the paired functions, we replaced each
+        set with a precomputed object of the Modeler class that
+        already combines each pair.  The old functions still exist,
+        but are planned to be removed from the namespace in a future
+        version.  If you need to call them directly, then you should
+        fully qualify them with the class name (e.g.,
+        Modeler:::learnLR). 
+
+
+		CHANGES IN R VERSION 2.0.0
+
+NEW FEATURES
+
+    o	Brand new packaging: split out from the CrossVal
+        package. Contains the generic support to "learn" and
+        "predict". Also contains the base implementations of numerous
+        statistical models for classification or regression.
+

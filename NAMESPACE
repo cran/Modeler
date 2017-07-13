@@ -1,0 +1,56 @@
+# Copyright (C) Kevin R. Coombes, 2007-2013.
+
+###
+### NAMESPACE
+###
+
+import(methods)
+import(class)
+import(rpart)
+import(TailRank)
+import(e1071)
+import(randomForest)
+import(nnet)
+import(neuralnet)
+import(ClassComparison)
+import(ClassDiscovery)
+importFrom(oompaBase, "matrixMean", "matrixVar")
+importFrom("stats", "binomial", "glm", "lm", "median", "quantile",
+           "step", "as.formula")
+
+## various generics
+importMethodsFrom(ClassDiscovery, "predict")
+
+exportMethods("predict")
+
+## m00-filter
+export(filterMean, filterSD, filterRange, filterIQR,
+       filterMin, filterMax, filterMedian)
+
+## m00-pruner
+export(keepAll, fsTtest, fsModifiedFisher, fsPearson, fsSpearman,
+       fsMedSplitOddsRatio, fsChisquared, fsEntropy,
+       fsFisherRandomForest, fsTailRank)
+
+## m01-Model
+exportClasses("Modeler")
+export("Modeler") # generator
+export("learn")
+
+## m02-FittedModel
+exportClasses("FittedModel")
+export("FittedModel") # generator
+
+## m03-predictors
+export("modelerPCALR", "learnPCALR", "predictPCALR",
+       "modelerRPART", "learnRPART", "predictRPART",
+       "modelerLR", "learnLR", "predictLR",
+       "modelerSelectedLR", "learnSelectedLR", "predictSelectedLR",
+       "modelerTailRank", "learnTailRank", "predictTailRank",
+       "modeler3NN", "modeler5NN", "learnKNN", "predictKNN",
+       "modelerCCP", "learnCCP", "predictCCP",
+       "modelerRF", "learnRF", "predictRF",
+       "modelerNNET", "learnNNET", "predictNNET",
+       "modelerNNET2", "learnNNET2", "predictNNET2",
+       "modelerSVM", "learnSVM", "predictSVM"
+       )

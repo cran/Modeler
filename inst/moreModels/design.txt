@@ -1,0 +1,45 @@
+
+
+I'm having trouble deciding the "best practices" way to design and implement a particular feature in a package that I'm putting together.  To get an idea of the context, suppose I want to fit a model to make (binary class) predictions from a gene expression dataset, and I'd like to support different feature-selection algorithms.  In particular, I'd want to be able to compare different (instantiated) feature-selection algorithms by writing code that looks something like this:
+
+algorithms <- list(M1 = method1, M2 = method2, M3 = method3)
+predictions <- lapply(algorithms, function(alg) {
+  selectionVector <- selectFeatures(alg, trainingData, trainingClasses)
+  subdata <- trainingData[selectionVectopr,]
+  fittedModel <- myClassifier(subdata, trainingClasses)
+  predict(fittedModel, testData)
+})
+
+However, each algorithm actually represents an entire family of algorithms defined by its own unique set of parameters.  (But the code just written doesn't know anything about how to selected the parameters to create specific methods out of families of algorithms.) One simple example of such an algorithm could be pseudo-coded by something like
+
+pruneByTtest  <- function(data, groups, fdr) {
+   tstats <- computeTstatistics(data, groups)
+   pvalues <- computePvalues(tstats, groups)
+   fdrvalues <- convertToFDR(pvalues)
+   (fdrvalues < fdr)
+}
+
+which selects features whose t-statistic is significant at some specified level of the false discovery rate. Every method to perform feature selection would need the "data" and "groups" arguments, but presumably have their own arguments:
+
+pruneByMagic <- function(data, groups, magicNumber) {
+   vec <- rep(FALSE, length=nrow(data))
+   vec[sample(nrow(data, magicNumber)] <- TRUE
+   vec
+}
+
+I can think of (at least) two ways to try to implement this idea.
+
+Design 1: function-making functions
+
+Here, for each algorithm family, take advantage of environments by writing a wrapper that creates the pruning function with the parameters set:
+
+makeTPruner <- function(fdr) {
+  function(data, groups) pruneByTtest(data, groups, fdr)
+}
+
+method1 <- makeTPruner(0.10)
+
+selectFeatures <- function(alg, data, groups) <- alg(data, groups) # can skip this and replace the line in the lap[p[ly
+
+Design 2: class wrappers for functions
+

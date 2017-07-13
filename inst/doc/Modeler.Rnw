@@ -1,0 +1,366 @@
+%\VignetteIndexEntry{Modeler}
+%\VignetteKeywords{Classification,Prediction,Class Prediction}
+%\VignetteDepends{Modeler}
+%\VignettePackage{Modeler}
+\documentclass{article}
+
+\usepackage{hyperref}
+
+\setlength{\topmargin}{0in}
+\setlength{\textheight}{8in}
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{0in}
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+
+\title{Learning and predicting with statistical models}
+\author{Kevin R. Coombes}
+
+\begin{document}
+
+\setkeys{Gin}{width=6.5in}
+\maketitle
+\tableofcontents
+
+\section{Introduction}
+
+We start, as usual, by loading the appropriate package:
+<<lib>>=
+library(Modeler)
+@ 
+
+\section{Simulated DataSet}
+In order to have something to test our models against, we simulate a
+dataset that has enough underlying structure to make it interesting.
+First, we set the random seed so that the results will be reproducible.
+<<seed>>=
+set.seed(234843)
+@ 
+Next, we define the simulation parameters.  We will simulate a dataset
+with \texttt{nFeatures} rows representing genes, only \texttt{nSignif} of
+which are significantly associated with the outcome of interest.  We
+assume that both the training set and test set come from the same
+population, which is actually a mixture of two types, $A$ and $B$,
+where the probability of belonging to type $B$ is given by
+\texttt{pB}.  The significant genes are assumed to be differentially
+expressed between the two types, with the difference in means
+following a normal distribution ($\Delta \sim \textrm{Norm}(\delta,
+\sigma)$).
+<<params>>=
+nFeatures <- 10000
+nSignif <- 100
+pB <- 0.4
+delta <- 1
+sigma <- 0.3
+nTrain <- 100
+nTest <- 100
+@ 
+For cleanup purposes, we specify the names of things we can safely remove later.
+<<paramlist>>=
+paramlist <- c("nFeatures", "nSignif", "pB",
+               "delta", "sigma", "nTrain", "nTest")
+@ 
+
+In addition to simulating the class assignment ($A$ or $B$), we will
+also simulate a continuous outcome that represents a probability of
+belonging to class $B$.  The continuous outcome
+(Figure~\ref{betadist}) will follow a beta distribution with
+parameters $\alpha$ and $\beta$.
+<<alpha.beta>>=
+alpha <- 0.75
+beta <- 0.95
+round(100*pbeta(seq(0.1, 0.9, 0.1), alpha, beta), 1)
+xx <- seq(0, 1, length=300)
+yy <- dbeta(xx, alpha, beta)
+@ 
+\begin{figure}
+<<fig=TRUE,echo=FALSE>>=
+plot(xx, yy, type='l')
+@ 
+\caption{Probability of belonging to class B is simulated from this
+  distribution, Beta(0.75, 0.95).}
+\label{betadist}
+\end{figure}
+
+Now we can actually start the simulation.  For the differentially
+expressed genes, we make it equally likely that they are higher in $A$
+or higher in $B$. 
+<<signed>>=
+signed <- -1 + 2*rbinom(nSignif, 1, 0.5)
+@ 
+As noted above, the magnitude of the difference follows a normal
+distibution. 
+<<offsets>>=
+offsets <- c(signed*rnorm(nSignif, delta, sigma), # can change in either direction
+             rep(0, nFeatures - nSignif))         # but most don't change at all
+@ 
+
+\subsection{Training Data}
+To simulate the training dataset, we first simulate the continuous
+outcomes (interpreted as the probability of belonging to class $B$).
+These are transformed using a logit function so they lie on the
+entire real line.
+<<out>>=
+lp <- function(p) log(p/(1-p))
+ea <- function(a) 1/(1+exp(-a))
+pOut <- rbeta(nTrain, alpha, beta)
+trainOutcome <- lp(pOut)
+@ 
+The binary classes for the simulated samples are obtained by
+dichotomizing the probabilities.
+<<class>>=
+# TODO: Fix this so it looks at correlation with the continuous outcome
+# instead of just diferential expression between classes
+trainClass <- factor(c("cyan", "magenta")[1 + 1*(pOut > 0.5)])
+summary(trainClass)
+isB <- trainClass=="magenta"
+summary(isB)
+@ 
+Now we put together the training dataset.
+<<train>>=
+trainData <- matrix(rnorm(nFeatures*nTrain), ncol=nTrain) # pure noise
+trainData[,isB] <- sweep(trainData[,isB], 1, offsets, "+")
+trainData <- t(scale(t(trainData)))
+dimnames(trainData) <- list(paste("gene", 1:nFeatures, sep=''),
+                            paste("trainsamp", 1:nTrain, sep=''))
+
+@ 
+
+<<fig=TRUE,echo=FALSE>>=
+K <- 3
+truncData <- trainData[1:500,]
+truncData[truncData < -K] <- -K
+truncData[truncData > K] <- K
+heatmap(truncData, col=redgreen(64),
+        ColSideColors=as.character(trainClass), 
+        scale='none', zlim=c(-K, K), main="Training Data")
+
+@ 
+
+\subsection{Test Data}
+We use the same procedure to simulate the test dataset, starting with
+continuous outcomes.
+<<test.out>>=
+pOut <- rbeta(nTest, alpha, beta)
+testOutcome <- lp(pOut)
+@ 
+We convert the continuous outcomes to binary class assignments.
+<<test.class>>=
+testClass <- factor(c("cyan", "magenta")[1 + 1*(pOut > 0.5)])
+summary(testClass)
+isB <- testClass=="magenta"
+summary(isB)
+@ 
+And we then generate the simulated microarray data.
+<<testData>>=
+testData <- matrix(rnorm(nFeatures*nTest), ncol=nTest) # pure noise
+testData[,isB] <- sweep(testData[,isB], 1, offsets, "+")
+testData <- t(scale(t(testData)))
+dimnames(testData) <- list(paste("gene", 1:nFeatures, sep=''),
+                            paste("testsamp", 1:nTest, sep=''))
+@ 
+
+<<fig=TRUE,echo=FALSE>>=
+K <- 3
+truncData <- testData[1:500,]
+truncData[truncData < -K] <- -K
+truncData[truncData > K] <- K
+heatmap(truncData, col=redgreen(64),
+        ColSideColors=as.character(testClass), 
+        scale='none', zlim=c(-K, K), main="Test Data")
+@ 
+
+
+At this point, we can clean up the work space.
+<<clean>>=
+rm(list=paramlist)
+rm(pOut, isB, signed, offsets)
+rm(xx, yy, alpha, beta)
+rm(paramlist)
+@ 
+
+\section{Feature Selection}
+Here we implement a simple feature selection scheme. We first perform
+gene-by-gene t-tests on the training data to identify genes that are
+differentially exeprssed between the two classes. 
+<<t.tests>>=
+library(ClassComparison)
+mtt <- MultiTtest(trainData, trainClass)
+@ 
+<<fig=TRUE,echo=FALSE>>=
+opar <- par(mfrow=c(2,1))
+plot(mtt)
+hist(mtt)
+par(opar)
+@ 
+
+We then use a beta-uniform-mixture (BUM) model to estimate the false
+discover rate (FDR).
+<<bum>>=
+bum <- Bum(mtt@p.values)
+countSignificant(bum, alpha=0.01, by="FDR")
+countSignificant(bum, alpha=0.05, by="FDR")
+
+@ 
+<<fig=TRUE,echo=FALSE>>=
+hist(bum)
+@ 
+
+<<geneset>>=
+geneset <- rownames(trainData)[selectSignificant(bum, alpha=0.05, by="FDR")]
+length(geneset)
+trainSubset <- trainData[geneset,]
+testSubset  <- testData[geneset,]
+@ 
+
+\section{Fitting Models and Making Predictions}
+
+\subsection{K Nearest Neighbors}
+Note that the KNN method works for binary class prediction, but does
+not work for regression.
+<<3nn>>=
+knnFitted <- learn(modeler3NN, trainSubset, trainClass)
+knnPredictions <- predict(knnFitted, testSubset)
+table(knnPredictions, testClass)
+
+@ 
+
+<<5nn>>=
+knnFitted <- learn(modeler5NN, trainSubset, trainClass)
+knnPredictions <- predict(knnFitted, testSubset)
+table(knnPredictions, testClass)
+@ 
+
+\subsection{Classification and regression trees}
+
+Classification
+<<cart>>=
+rpartFitted <- learn(modelerRPART, trainSubset, trainClass)
+rpartPredictions <- predict(rpartFitted, testSubset, type='class')
+table(rpartPredictions, testClass)
+@ 
+
+Regression
+<<cart.reg>>=
+rpartFitted <- learn(modelerRPART, trainSubset, trainOutcome)
+rpartPredictions <- predict(rpartFitted, testSubset)
+table(rpartPredictions > 0, testClass)
+cor(rpartPredictions, testOutcome)
+temp <- lm(testOutcome ~ rpartPredictions)
+@ 
+
+<<fig=TRUE,echo=FALSE>>=
+plot(rpartPredictions, testOutcome)
+abline(coef(temp))
+@ 
+
+\subsection{Linear/Logistic Regression}
+
+Classification
+<<lr,eval=FALSE>>=
+# takes too long for the vignette, because of the "step"
+# across glm fits.
+lrFitted <- learn(modelerLR, trainSubset, trainClass)
+lrPredictions <- predict(lrFitted, testSubset)
+table(lrPredictions, testClass)
+@ 
+
+Regression
+<<lr.reg>>=
+lrFitted <- learn(modelerLR, trainSubset, trainOutcome)
+lrPredictions <- predict(lrFitted, testSubset)
+table(lrPredictions > 0, testClass)
+cor(lrPredictions, testOutcome)
+temp <- lm(testOutcome ~ lrPredictions)
+@ 
+
+<<fig=TRUE,echo=FALSE>>=
+plot(lrPredictions, testOutcome)
+abline(coef(temp))
+@ 
+
+\subsection{Compound Covariate Prediction}
+Classification only
+<<ccp>>=
+ccpFitted <- learn(modelerCCP, trainSubset, trainClass)
+ccpPredictions <- predict(ccpFitted, testSubset)
+table(ccpPredictions, testClass)
+@ 
+
+\subsection{Support Vector Machines}
+
+Classification
+<<svm>>=
+# takes too long for the vignette, because of the "step"
+# across glm fits.
+svmFitted <- learn(modelerSVM, trainSubset, trainClass)
+svmPredictions <- predict(svmFitted, testSubset)
+table(svmPredictions, testClass)
+@ 
+
+Regression
+<<svm.reg>>=
+svmFitted <- learn(modelerSVM, trainSubset, trainOutcome)
+svmPredictions <- predict(svmFitted, testSubset)
+table(svmPredictions > 0, testClass)
+cor(svmPredictions, testOutcome)
+temp <- lm(testOutcome ~ svmPredictions)
+@ 
+
+<<fig=TRUE,echo=FALSE>>=
+plot(svmPredictions, testOutcome)
+abline(coef(temp))
+@ 
+
+\subsection{Neural Networks}
+
+Classification
+<<nnet>>=
+nnetFitted <- learn(modelerNNET, trainSubset, trainClass)
+nnetPredictions <- predict(nnetFitted, testSubset)
+table(nnetPredictions, testClass)
+@ 
+
+Regression
+<<nnet.reg>>=
+nnetFitted <- learn(modelerNNET, trainSubset, trainOutcome)
+nnetPredictions <- predict(nnetFitted, testSubset)
+table(nnetPredictions > 0, testClass)
+cor(nnetPredictions, testOutcome)
+temp <- lm(testOutcome ~ nnetPredictions)
+@ 
+
+<<fig=TRUE,echo=FALSE>>=
+plot(nnetPredictions, testOutcome)
+#abline(coef(temp))
+@ 
+
+\subsection{Random Forests}
+
+Classification
+<<rf>>=
+rfFitted <- learn(modelerRF, trainSubset, trainClass)
+rfPredictions <- predict(rfFitted, testSubset)
+table(rfPredictions, testClass)
+@ 
+
+Regression
+<<rf.reg>>=
+rfFitted <- learn(modelerRF, trainSubset, trainOutcome)
+rfPredictions <- predict(rfFitted, testSubset)
+table(rfPredictions > 0, testClass)
+cor(rfPredictions, testOutcome)
+temp <- lm(testOutcome ~ rfPredictions)
+@ 
+
+<<fig=TRUE,echo=FALSE>>=
+plot(rfPredictions, testOutcome)
+abline(coef(temp))
+@ 
+
+
+\end{document}
