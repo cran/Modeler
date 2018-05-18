@@ -47,9 +47,6 @@ Objects can be created by calls to the constructor function,
 \seealso{
   See \code{\link{Modeler-class}} and \code{\link{learn}} for details on
   how to fit a model to data.
-  
-  See \code{\link{Modeler-package}} for a list of the kinds of
-  classifiers that have been adapted for use in this generic framework.
 }
 \examples{
 showClass("FittedModel")

@@ -54,10 +54,6 @@ Modeler(learn, predict, ...)
   
   See the description of the \code{\link{FittedModel-class}} for details
   about the kinds of objects produced by \code{\link{learn}}.
-  
-  See \code{\link{Modeler-package}} for a list of the kinds of
-  classifiers that have been adapted for use in this generic framework.
-  
 }
 \examples{
 learnNNET

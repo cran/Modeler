@@ -5,9 +5,9 @@
 ###
 
 setClass("Modeler",
-         representation(learnFunction="function",
-                        predictFunction="function",
-                        paramList="list"))
+         slots = c(learnFunction="function",
+                   predictFunction="function",
+                   paramList="list"))
 
 ## Generates a Modeler object
 Modeler <- function(learn, predict, ...) {

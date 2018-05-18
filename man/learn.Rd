@@ -43,20 +43,12 @@ learn(model, data, status, prune=keepAll)
 \value{
   An object of the \code{\link{FittedModel-class}}.
 }
-\references{
-  See the manual page for the \code{\link{Modeler-package}} for a list
-  of related references.
-}
 \author{
   Kevin R. Coombes <krc@silicovore.com>
 }
 \seealso{
   See \code{\link{predict}} for how to make predictions on new test data
   from an object of the \code{\link{FittedModel-class}}.
-  
-  See the manual page for the \code{\link{Modeler-package}} for a list
-  of classifiers that have been adapted to work with this
-  cross-validation mechanism.
 }
 \examples{
 # set up a generic RPART model

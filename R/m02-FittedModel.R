@@ -7,12 +7,12 @@
 setClassUnion("numericOrFactor", c("numeric", "factor"))
 
 setClass("FittedModel",
-         representation(predictFunction="function",
-                        trainData="matrix",
-                        trainStatus="numericOrFactor",
-                        details="list",
-                        extras="list",
-                        fsVector = "logical"))
+         slots = c(predictFunction="function",
+                   trainData="matrix",
+                   trainStatus="numericOrFactor",
+                   details="list",
+                   extras="list",
+                   fsVector = "logical"))
 
 ## Generates a FittedModel object
 FittedModel <- function(predict, data, status, details, ...) {
