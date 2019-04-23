@@ -1,4 +1,4 @@
-49b8be290a1ea6a63617766a67d96555 *DESCRIPTION
+26838bc9cad5a3bc00dc6deb67bfca9b *DESCRIPTION
 f785bcbd6e73f02b3da61b9587722186 *NAMESPACE
 7d90ed331a673e27d99086cc5c87a7e0 *NEWS
 9dda8998f2326429f8dbee44ee787378 *R/m00-filter.R
@@ -15,10 +15,10 @@ e2569caad29e4745007328f6edb1e58f *R/m10-RF.R
 fc05974210e770dc581cade4866d38d9 *R/m11-NNET.R
 0312afca5c7ea5886598fd752dbdfaf6 *R/m12-nnet2.R
 cd71bfe5678e03fcbe6944f2e0b31d8a *TODO
-961a543eeb92a628a8b9e97ee46276d4 *build/vignette.rds
+7adbc9fe7ce301f6668b63c6ab9d9ef3 *build/vignette.rds
 8d84af666b8996551b6f8f581f4d953d *inst/doc/Modeler.R
 3be685c8790ad43c5b84f8be16db361a *inst/doc/Modeler.Rnw
-ff3c442aacdc72af85faad42b805c5b2 *inst/doc/Modeler.pdf
+3d5f919ddf520df0410e5fe767f6f00c *inst/doc/Modeler.pdf
 28ee3ad8a2df715af827756e166b779e *inst/moreModels/design.txt
 bf659191b63e366cebd95234d6ce5a25 *inst/moreModels/models.R
 c5b600ffc90c37c5684c0141d8398df7 *man/FittedModel-class.Rd
@@ -39,8 +39,8 @@ b66401b714567a6930f3a2b05069b23b *man/learnRPART.Rd
 336f3cb3f2d413655855a24790704fc4 *man/learnSelectedLR.Rd
 1c75e12af233f38264123792bdf13657 *man/learnTailRank.Rd
 b456d7720b37be23474182a5045e4227 *man/pruners.Rd
-5e843d915eebaac099b38a5f6397fa11 *tests/t00-filter.R
-c0b2bf50d1cc65794e2fa6bef8f975bb *tests/t00-filter.Rout.save
-f0685c3697d997459f360b843099cb56 *tests/t00-pruner.R
-630b8631d993d6bb24cb1e244f746873 *tests/t00-pruner.Rout.save
+e1a402545af7056933b213b18e33570b *tests/t00-filter.R
+2dfd114f5b3e06064493d486c687c80a *tests/t00-filter.Rout.save
+660f63bb6f34b3a9c8317497bba4faec *tests/t00-pruner.R
+cd9ce67d7aaa86acb9734e8e15ffc242 *tests/t00-pruner.Rout.save
 3be685c8790ad43c5b84f8be16db361a *vignettes/Modeler.Rnw

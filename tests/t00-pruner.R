@@ -1,4 +1,5 @@
 library(Modeler)
+RNGversion("3.5.3")
 set.seed(246391)
 data <- matrix(rnorm(1000*36), nrow=1000, ncol=36)
 data[1:50, 1:18] <- data[1:50, 1:18] + 1

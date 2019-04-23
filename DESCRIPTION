@@ -1,6 +1,6 @@
 Package: Modeler
-Version: 3.4.3
-Date: 2018-05-17
+Version: 3.4.4
+Date: 2019-04-23
 Title: Classes and Methods for Training and Using Binary Prediction
         Models
 Author: Kevin R. Coombes
@@ -17,6 +17,6 @@ LazyLoad: yes
 biocViews: Microarray, Clustering
 URL: http://oompa.r-forge.r-project.org/
 NeedsCompilation: no
-Packaged: 2018-05-17 17:04:48 UTC; Kevin
+Packaged: 2019-04-23 14:51:28 UTC; Kevin
 Repository: CRAN
-Date/Publication: 2018-05-18 04:10:55 UTC
+Date/Publication: 2019-04-23 16:20:08 UTC
