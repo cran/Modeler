@@ -113,7 +113,7 @@ data <- matrix(rnorm(100*20), ncol=20)
 status <- factor(rep(c("A", "B"), each=10))
 
 # set up the parameter list
-rpart.params <- list(minNgenes=10, alpha=0.10, perVar=0.80, prior=0.5)
+rpart.params <- list(minsplit = 10)
 
 # learn the model
 fm <- learnRPART(data, status, rpart.params, predictRPART)
