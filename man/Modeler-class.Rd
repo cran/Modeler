@@ -15,7 +15,7 @@ Objects can be created by calls to the constructor fuinction, \code{\link{Modele
       to fit the model to a data set.  See \code{\link{learn}} for details.}
     \item{\code{predictFunction}:}{Object of class \code{"function"} that is
       used to make predictions on new data from a fitted model.  See
-      \code{\link{predict}} for details. }
+      \code{\link{predict,FittedModel-method}} for details. }
     \item{\code{paramList}:}{Object of class \code{"list"} that contains
       parameters that are specific for one type of classifier.}
   }

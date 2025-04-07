@@ -47,7 +47,7 @@ predictKNN(newdata, details, status, ...)
   mechanism provided by the \code{\link{Modeler-class}}.
   
   The implementation uses the \code{\link[class]{knn}} method from the
-  \code{\link{class}} package.  The \code{params} argument to
+  \code{class} package.  The \code{params} argument to
   \code{learnKNN} must be alist that at least includes the component
   \code{k} that specifies the number of neighbors used.
 }

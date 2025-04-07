@@ -79,7 +79,7 @@ predictTailRank(newdata, details, status, ...)
   selected features (\code{sel}, a logical vector), the principal
   component decomposition (\code{spca}, an object of the
   \code{\link[ClassDiscovery]{SamplePCA}} class), the logistic
-  regression model (\code{mmod}, of class \code{\link{glm}}), the number
+  regression model (\code{mmod}, of class \code{\link[stats]{glm}}), the number
   of PCs used (\code{nCompUsed}) as well as the number of components
   available (\code{nCompAvail}) and the number of gene-features selected
   (\code{nGenesSelecets}).  The \code{details} object is appropriate for

@@ -47,7 +47,7 @@ learn(model, data, status, prune=keepAll)
   Kevin R. Coombes <krc@silicovore.com>
 }
 \seealso{
-  See \code{\link{predict}} for how to make predictions on new test data
+  See \code{\link[stats]{predict}} for how to make predictions on new test data
   from an object of the \code{\link{FittedModel-class}}.
 }
 \examples{

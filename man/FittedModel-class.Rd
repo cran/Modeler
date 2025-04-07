@@ -8,7 +8,7 @@
 \description{	Objects of this class represent parametrized statistical
   models (of the \code{\link{Modeler-class}}) after they have been fit
   to a training data set.  These objects can be used to
-  \code{\link{predict}} binary outcomes on new test data sets.}
+  \code{\link[stats]{predict}} binary outcomes on new test data sets.}
 \section{Objects from the Class}{
 Objects can be created by calls to the constructor function,
 \code{\link{FittedModel}}.  In practice, however, most

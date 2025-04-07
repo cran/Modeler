@@ -49,7 +49,7 @@ Modeler(learn, predict, ...)
 }
 \seealso{
   See the descriptions of the \code{\link{learn}} function and
-  the \code{\link{predict}} method for details on how to fit models on
+  the \code{\link{predict,FittedModel-method}} method for details on how to fit models on
   training data and make predictions on new test data. 
   
   See the description of the \code{\link{FittedModel-class}} for details

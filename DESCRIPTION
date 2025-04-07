@@ -1,13 +1,13 @@
 Package: Modeler
-Version: 3.4.7
-Date: 2025-01-08
+Version: 3.4.8
+Date: 2025-04-07
 Title: Classes and Methods for Training and Using Binary Prediction
         Models
 Authors@R: person(given = c("Kevin", "R."),
                   family = "Coombes",
                   role = c("aut", "cre"),
                   email = "krc@silicovore.com")
-Depends: R (>= 2.10), ClassDiscovery, ClassComparison, oompaBase
+Depends: R (>= 4.4), ClassDiscovery, ClassComparison, oompaBase
 Imports: methods, stats, class, rpart, TailRank, e1071, randomForest,
         nnet, neuralnet
 Suggests: Biobase
@@ -19,8 +19,8 @@ LazyLoad: yes
 biocViews: Microarray, Clustering
 URL: http://oompa.r-forge.r-project.org/
 NeedsCompilation: no
-Packaged: 2025-01-08 16:36:12 UTC; kevin
+Packaged: 2025-04-07 17:42:40 UTC; kevin
 Author: Kevin R. Coombes [aut, cre]
 Maintainer: Kevin R. Coombes <krc@silicovore.com>
 Repository: CRAN
-Date/Publication: 2025-01-08 17:50:07 UTC
+Date/Publication: 2025-04-07 19:40:06 UTC
