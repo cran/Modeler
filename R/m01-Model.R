@@ -19,7 +19,7 @@ Modeler <- function(learn, predict, ...) {
 
 learn <- function(model, data, status, prune=keepAll) {
   keep <- prune(data, status)
-  data <- data[keep, ]
+  data <- data[keep, , drop = FALSE]
   fitted <- model@learnFunction(data,
                                 status,
                                 model@paramList,
